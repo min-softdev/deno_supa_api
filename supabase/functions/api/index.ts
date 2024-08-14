@@ -1,4 +1,4 @@
-import { Hono } from "jsr:@hono/hono";
+import { Hono } from "npm:hono";
 import { routers } from "./routes/index.ts";
 
 const api = new Hono();

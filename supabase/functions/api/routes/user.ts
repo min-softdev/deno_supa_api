@@ -1,4 +1,4 @@
-import { Hono } from "jsr:@hono/hono";
+import { Hono } from "npm:hono";
 import { createUser, getUsers, updateUser } from "../controllers/index.ts";
 import { deleteUser } from "../controllers/user.ts";
 
