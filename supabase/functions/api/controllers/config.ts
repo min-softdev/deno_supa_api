@@ -6,7 +6,15 @@ interface ConfigPayload {
   value: any;
   type: string;
   description: string;
-  sub_config: any;
+  sub_config: [
+    {
+      name: string;
+      key: string;
+      value: any;
+      type: string;
+      description: string;
+    },
+  ];
 }
 interface createConfigProps {
   req: {

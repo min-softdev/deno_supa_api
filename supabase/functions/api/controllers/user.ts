@@ -17,7 +17,7 @@ export const createUser = async (c: createUserProps) => {
   const payload = await c.req.json();
 
   const { data, error } = await supabase
-    .from("users")
+    .from("profiles")
     .insert([payload]);
 
   if (error) throw new Error(error.message);
@@ -29,7 +29,7 @@ interface UserData {
   name: string;
   description: string;
   quantity: number;
-  uid: string;
+  id: string;
 }
 interface getUsersProps {
   req: {
@@ -44,15 +44,15 @@ export const getUsers = async (c: getUsersProps) => {
     const id = c.req.query("id");
     if (id) {
       const { data, error } = await supabase
-        .from("users")
+        .from("profiles")
         .select("*")
-        .eq("uid", id)
+        .eq("id", id)
         .single();
       if (error) throw new Error(error.message);
       return c.json({ data });
     }
 
-    const { data, error } = await supabase.from("users").select("*");
+    const { data, error } = await supabase.from("profiles").select("*");
     if (error) throw new Error(error.message);
     return c.json({ data });
   } catch (error) {
@@ -71,11 +71,10 @@ interface getUserProps {
 export const getUser = async (c: getUserProps) => {
   const id = c.req.query("id");
   const { data, error } = await supabase
-    .from("users")
+    .from("profiles")
     .select("*")
-    .eq("uid", id)
+    .eq("id", id)
     .single();
-  console.log("id :>> ", id);
   if (error) throw new Error(error.message);
   return c.json({ data });
 };
@@ -83,14 +82,12 @@ export const getUser = async (c: getUserProps) => {
 interface updateUserProps {
   req: {
     json: () => Promise<{
-      name?: string;
-      description?: string;
-      quantity?: number;
+      full_name?: string;
     }>;
     query: (key: string) => string;
   };
   json: (
-    data: { msg?: string; data?: UserData[] | null; error?: string },
+    data: { msg?: string; data?: any | null; error?: string },
   ) => void;
 }
 export const updateUser = async (c: updateUserProps) => {
@@ -98,10 +95,15 @@ export const updateUser = async (c: updateUserProps) => {
     const id = c.req.query("id");
     const payload = await c.req.json();
 
-    const { data, error } = await supabase
-      .from("users")
+    console.log('payload, id :>> ', payload, id);
+
+    const res = await supabase.from("profiles").select("*").eq("id", id).single();
+    console.log('res :>> ', res);
+
+    const { error, ...data } = await supabase
+      .from("profiles")
       .update(payload)
-      .eq("uid", id);
+      .eq("id", id)
 
     if (error) throw new Error(error.message);
 
@@ -123,9 +125,9 @@ export const deleteUser = async (c: deleteUserProps) => {
   const id = c.req.query("id");
 
   const { data, error } = await supabase
-    .from("users")
+    .from("profiles")
     .delete()
-    .eq("uid", id);
+    .eq("id", id);
 
   if (error) throw new Error(error.message);
 
